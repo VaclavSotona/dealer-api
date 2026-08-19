@@ -68,11 +68,11 @@ class InMemoryDealerRegistry : DealerRegistry {
         return dealers.removeIf { it.id == id }
     }
 
-    override fun dealerCount(): Int {
+    override fun dealersCount(): Int {
         return dealers.size
     }
 
-    override fun eliteDealerCount(): Int {
+    override fun eliteDealersCount(): Int {
         return eliteDealers().size
     }
 

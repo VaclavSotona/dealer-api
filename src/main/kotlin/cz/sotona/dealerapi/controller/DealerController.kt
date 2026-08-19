@@ -32,7 +32,7 @@ class DealerController(
 
     @GetMapping("/count")
     fun dealerCount(): Int =
-        registry.dealerCount()
+        registry.dealersCount()
 
     @GetMapping("/strongest")
     fun strongestDealer(): ResponseEntity<Dealer> =
@@ -77,9 +77,10 @@ class DealerController(
     @GetMapping("/statistics")
     fun statistics(): DealerStatistics =
         DealerStatistics(
-            count = registry.dealerCount(),
+            count = registry.dealersCount(),
             averageIq = registry.averageIq(),
-            eliteDealersCount = registry.eliteDealerCount(),
+            eliteDealersCount = registry.eliteDealersCount(),
+            eliteDealers = registry.eliteDealers(),
             averageStrength = registry.averageStrength(),
             strongestDealer = registry.strongestDealer(),
             smartestDealer = registry.smartestDealer(),

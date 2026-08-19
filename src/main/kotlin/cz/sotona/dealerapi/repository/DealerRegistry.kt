@@ -24,8 +24,8 @@ interface DealerRegistry {
 
     fun removeDealer(id: Int): Boolean
 
-    fun dealerCount(): Int
-    fun eliteDealerCount(): Int
+    fun dealersCount(): Int
+    fun eliteDealersCount(): Int
 
     fun allDealers(): List<Dealer>
     fun findByNickname(nickname: String): List<Dealer>
