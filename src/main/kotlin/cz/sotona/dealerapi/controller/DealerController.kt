@@ -80,11 +80,11 @@ class DealerController(
         DealerStatistics(
             crewStatistics = registry.crewStatistics(),
             loyaltyStatistics = registry.loyaltyStatistics(),
-            eliteDealers = registry.eliteDealers(),
             strongestDealer = registry.strongestDealer(),
             smartestDealer = registry.smartestDealer(),
             dealerOfTheYear = registry.dealerOfTheYear(),
-            dealerWithMostYearsInPrison = registry.dealerWithMostYearsInPrison()
+            dealerWithMostYearsInPrison = registry.dealerWithMostYearsInPrison(),
+            eliteDealers = registry.eliteDealers()
         )
 
     @GetMapping("/id/{id}")

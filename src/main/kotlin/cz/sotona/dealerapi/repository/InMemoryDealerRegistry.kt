@@ -14,16 +14,20 @@ class InMemoryDealerRegistry : DealerRegistry {
     private var nextId = 1
 
     init {
-        addDealer("Profesor", 12, Loyalty.INNER_CIRCLE, 31, 157)
-        addDealer("Kobra", 0, Loyalty.RAT, 55, 55)
-        addDealer("Buldozer", 8, Loyalty.HOLDS_THE_LINE, 92, 78)
-        addDealer("Šedý Vlk", 3, Loyalty.HOLDS_THE_LINE, 84, 102)
-        addDealer("Doktor", 15, Loyalty.INNER_CIRCLE, 45, 149)
-        addDealer("Kraken", 6, Loyalty.RAT, 97, 68)
-        addDealer("Ghost", 1, Loyalty.HOLDS_THE_LINE, 71, 125)
-        addDealer("Mamba", 10, Loyalty.INNER_CIRCLE, 88, 136)
-        addDealer("Tank", 4, Loyalty.HOLDS_THE_LINE, 100, 74)
-        addDealer("Šíbr", 7, Loyalty.RAT, 52, 141)
+        val names = listOf(
+            "Profesor", "Kobra", "Buldozer", "Doktor",
+            "Kraken", "Ghost", "Mamba", "Tank", "Šíbr"
+        )
+
+        repeat(121) {
+            addDealer(
+                nickname = names.random() + (1..99999).random(),
+                yearsInPrison = (0..15).random(),
+                loyalty = Loyalty.entries.random(),
+                iq = (50..150).random(),
+                strength = (50..160).random()
+            )
+        }
     }
 
     override fun addDealer(
@@ -146,14 +150,14 @@ class InMemoryDealerRegistry : DealerRegistry {
         if (dealers.isEmpty()) {
             return null
         }
-        return dealers.map { it.iq }.average()
+        return dealers.map { it.iq }.average().let { round(it * 100) / 100 }
     }
 
     override fun averageStrength(): Double? {
         if (dealers.isEmpty()) {
             return null
         }
-        return dealers.map { it.strength }.average()
+        return dealers.map { it.strength }.average().let { round(it * 100) / 100 }
     }
 
     override fun loyaltyStatistics(): Map<Loyalty, LoyaltyStatistics> =
