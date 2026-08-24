@@ -1,8 +1,7 @@
 package cz.sotona.dealerapi.dto
 
-data class CrewStatistics(
+data class LoyaltyStatistics(
     val count : Int,
-    val eliteDealersCount: Int?,
     val averageIq : Double?,
     val averageStrength : Double?,
 )

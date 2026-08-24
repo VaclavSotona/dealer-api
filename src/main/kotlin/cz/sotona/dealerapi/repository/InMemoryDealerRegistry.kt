@@ -1,9 +1,11 @@
 package cz.sotona.dealerapi.repository
 
 import cz.sotona.dealerapi.dto.CrewStatistics
+import cz.sotona.dealerapi.dto.LoyaltyStatistics
 import cz.sotona.dealerapi.model.Dealer
 import cz.sotona.dealerapi.model.Loyalty
 import org.springframework.stereotype.Repository
+import kotlin.math.round
 
 @Repository
 class InMemoryDealerRegistry : DealerRegistry {
@@ -154,9 +156,20 @@ class InMemoryDealerRegistry : DealerRegistry {
         return dealers.map { it.strength }.average()
     }
 
-    override fun loyaltyStatistics(): Map<Loyalty, Int> =
+    override fun loyaltyStatistics(): Map<Loyalty, LoyaltyStatistics> =
         Loyalty.entries.associateWith { loyalty ->
-            dealers.count { it.loyalty == loyalty }
+            val dealers = dealers.filter { it.loyalty == loyalty }
+            LoyaltyStatistics(
+                count = dealers.filter { it.loyalty == loyalty }.size,
+                averageIq = dealers.filter { it.loyalty == loyalty }
+                    .map { it.iq }
+                    .average()
+                    .let { round(it * 100) / 100 },
+                averageStrength = dealers.filter { it.loyalty == loyalty }
+                    .map { it.strength }
+                    .average()
+                    .let { round(it * 100) / 100 },
+            )
         }
 
     override fun crewStatistics() = CrewStatistics(
