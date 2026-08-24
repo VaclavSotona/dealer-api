@@ -1,5 +1,6 @@
 package cz.sotona.dealerapi.repository
 
+import cz.sotona.dealerapi.dto.CrewStatistics
 import cz.sotona.dealerapi.model.Dealer
 import cz.sotona.dealerapi.model.Loyalty
 import org.springframework.stereotype.Repository
@@ -152,4 +153,16 @@ class InMemoryDealerRegistry : DealerRegistry {
         }
         return dealers.map { it.strength }.average()
     }
+
+    override fun loyaltyStatistics(): Map<Loyalty, Int> =
+        Loyalty.entries.associateWith { loyalty ->
+            dealers.count { it.loyalty == loyalty }
+        }
+
+    override fun crewStatistics() = CrewStatistics(
+        count = dealersCount(),
+        eliteDealersCount = eliteDealersCount(),
+        averageIq = averageIq(),
+        averageStrength = averageStrength()
+    )
 }

@@ -3,6 +3,7 @@ package cz.sotona.dealerapi.controller
 import cz.sotona.dealerapi.dto.CreateDealerRequest
 import cz.sotona.dealerapi.dto.DealerStatistics
 import cz.sotona.dealerapi.model.Dealer
+import cz.sotona.dealerapi.model.Loyalty
 import cz.sotona.dealerapi.repository.DealerRegistry
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -77,17 +78,16 @@ class DealerController(
     @GetMapping("/statistics")
     fun statistics(): DealerStatistics =
         DealerStatistics(
-            count = registry.dealersCount(),
-            averageIq = registry.averageIq(),
-            eliteDealersCount = registry.eliteDealersCount(),
+            crewStatistics = registry.crewStatistics(),
+            loyaltyStatistics = registry.loyaltyStatistics(),
             eliteDealers = registry.eliteDealers(),
-            averageStrength = registry.averageStrength(),
             strongestDealer = registry.strongestDealer(),
             smartestDealer = registry.smartestDealer(),
             dealerOfTheYear = registry.dealerOfTheYear(),
+            dealerWithMostYearsInPrison = registry.dealerWithMostYearsInPrison()
         )
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     fun getDealer(
         @PathVariable id: Int
     ): ResponseEntity<Any> {
@@ -101,7 +101,7 @@ class DealerController(
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id/{id}")
     fun removeDealer(
         @PathVariable id: Int
     ): ResponseEntity<Void> {
@@ -111,4 +111,22 @@ class DealerController(
             ResponseEntity.notFound().build()
         }
     }
+
+    @GetMapping("/nickname/{nickname}")
+    fun searchDealerByNickname(
+        @PathVariable nickname: String
+    ): List<Dealer> =
+        registry.findByNickname(nickname)
+
+    @GetMapping("/text/{text}")
+    fun searchDealerByText(
+        @PathVariable text: String
+    ): List<Dealer> =
+        registry.dealersByTextInNickname(text)
+
+    @GetMapping("/loyalty/{loyalty}")
+    fun searchDealerByLoyalty(
+        @PathVariable loyalty: Loyalty
+    ): List<Dealer> =
+        registry.dealersByLoyalty(loyalty)
 }

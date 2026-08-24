@@ -1,5 +1,6 @@
 package cz.sotona.dealerapi.repository
 
+import cz.sotona.dealerapi.dto.CrewStatistics
 import cz.sotona.dealerapi.model.Loyalty
 import cz.sotona.dealerapi.model.Dealer
 
@@ -26,6 +27,8 @@ interface DealerRegistry {
 
     fun dealersCount(): Int
     fun eliteDealersCount(): Int
+    fun loyaltyStatistics(): Map<Loyalty, Int>
+    fun crewStatistics(): CrewStatistics
 
     fun allDealers(): List<Dealer>
     fun findByNickname(nickname: String): List<Dealer>
