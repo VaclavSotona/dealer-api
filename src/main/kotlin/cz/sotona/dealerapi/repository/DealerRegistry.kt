@@ -1,7 +1,5 @@
 package cz.sotona.dealerapi.repository
 
-import cz.sotona.dealerapi.dto.CrewStatistics
-import cz.sotona.dealerapi.dto.LoyaltyStatistics
 import cz.sotona.dealerapi.model.Loyalty
 import cz.sotona.dealerapi.model.Dealer
 
@@ -24,29 +22,10 @@ interface DealerRegistry {
         iq: Int
     ): Boolean
 
-    fun removeDealer(id: Int): Boolean
-
-    fun dealersCount(): Int
-    fun eliteDealersCount(): Int
-    fun loyaltyStatistics(): Map<Loyalty, LoyaltyStatistics>
-    fun crewStatistics(): CrewStatistics
-
     fun allDealers(): List<Dealer>
-    fun findByNickname(nickname: String): List<Dealer>
-    fun dealersByLoyalty(loyalty: Loyalty): List<Dealer>
-    fun dealersWithMinIq(minIq: Int): List<Dealer>
-    fun dealersWithIqInRange(minIq: Int, maxIq: Int): List<Dealer>
-    fun dealersWithMinStrength(minStrength: Int): List<Dealer>
-    fun dealersByTextInNickname(text: String): List<Dealer>
-    fun eliteDealers(): List<Dealer>
-
-    fun strongestDealer(): Dealer?
-    fun smartestDealer(): Dealer?
-    fun dealerWithMostYearsInPrison(): Dealer?
-    fun smartestDealerFromLoyalty(loyalty: Loyalty): Dealer?
-    fun dealerOfTheYear(): Dealer?
     fun findById(id: Int): Dealer?
-
-    fun averageIq(): Double?
-    fun averageStrength(): Double?
+    fun findByNickname(nickname: String): List<Dealer>
+    fun dealersByTextInNickname(text: String): List<Dealer>
+    fun dealersByLoyalty(loyalty: Loyalty): List<Dealer>
+    fun removeDealer(id: Int): Boolean
 }

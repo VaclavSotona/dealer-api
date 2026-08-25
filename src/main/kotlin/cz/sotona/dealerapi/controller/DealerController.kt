@@ -4,21 +4,21 @@ import cz.sotona.dealerapi.dto.CreateDealerRequest
 import cz.sotona.dealerapi.dto.DealerStatistics
 import cz.sotona.dealerapi.model.Dealer
 import cz.sotona.dealerapi.model.Loyalty
-import cz.sotona.dealerapi.repository.DealerRegistry
+import cz.sotona.dealerapi.service.DealerService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/dealers")
 class DealerController(
-    private val registry: DealerRegistry
+    private val service: DealerService
 ) {
 
     @PostMapping
     fun addDealer(
         @RequestBody request: CreateDealerRequest
     ): Dealer {
-        return registry.addDealer(
+        return service.addDealer(
             request.nickname,
             request.yearsInPrison,
             request.loyalty,
@@ -29,69 +29,21 @@ class DealerController(
 
     @GetMapping
     fun getAllDealers(): List<Dealer> =
-        registry.allDealers()
-
-    @GetMapping("/count")
-    fun dealerCount(): Int =
-        registry.dealersCount()
-
-    @GetMapping("/strongest")
-    fun strongestDealer(): ResponseEntity<Dealer> =
-        registry.strongestDealer()
-            ?.let { ResponseEntity.ok(it) }
-            ?: ResponseEntity.noContent().build()
-
-    @GetMapping("/smartest")
-    fun smartestDealer(): ResponseEntity<Dealer> =
-        registry.smartestDealer()
-            ?.let { ResponseEntity.ok(it) }
-            ?: ResponseEntity.noContent().build()
-
-    @GetMapping("/most-years-in-prison")
-    fun dealerWithMostYearsInPrison(): ResponseEntity<Dealer> =
-        registry.dealerWithMostYearsInPrison()
-            ?.let { ResponseEntity.ok(it) }
-            ?: ResponseEntity.noContent().build()
-
-    @GetMapping("/dealer-of-the-year")
-    fun dealerOfTheYear(): ResponseEntity<Dealer> =
-        registry.dealerOfTheYear()
-            ?.let { ResponseEntity.ok(it) }
-            ?: ResponseEntity.noContent().build()
+        service.allDealers()
 
     @GetMapping("/elite-dealers")
     fun eliteDealers(): List<Dealer> =
-        registry.eliteDealers()
-
-    @GetMapping("/statistics/average-iq")
-    fun averageIq(): ResponseEntity<Double> =
-        registry.averageIq()
-            ?.let { ResponseEntity.ok(it) }
-            ?: ResponseEntity.noContent().build()
-
-    @GetMapping("/statistics/average-strength")
-    fun averageStrength(): ResponseEntity<Double> =
-        registry.averageStrength()
-            ?.let { ResponseEntity.ok(it) }
-            ?: ResponseEntity.noContent().build()
+        service.eliteDealers()
 
     @GetMapping("/statistics")
     fun statistics(): DealerStatistics =
-        DealerStatistics(
-            crewStatistics = registry.crewStatistics(),
-            loyaltyStatistics = registry.loyaltyStatistics(),
-            strongestDealer = registry.strongestDealer(),
-            smartestDealer = registry.smartestDealer(),
-            dealerOfTheYear = registry.dealerOfTheYear(),
-            dealerWithMostYearsInPrison = registry.dealerWithMostYearsInPrison(),
-            eliteDealers = registry.eliteDealers()
-        )
+        service.statistics()
 
     @GetMapping("/id/{id}")
     fun getDealer(
         @PathVariable id: Int
     ): ResponseEntity<Any> {
-        val dealer = registry.findById(id)
+        val dealer = service.findById(id)
         return if (dealer == null) {
             ResponseEntity
                 .status(404)
@@ -105,7 +57,7 @@ class DealerController(
     fun removeDealer(
         @PathVariable id: Int
     ): ResponseEntity<Void> {
-        return if (registry.removeDealer(id)) {
+        return if (service.removeDealer(id)) {
             ResponseEntity.noContent().build()
         } else {
             ResponseEntity.notFound().build()
@@ -116,17 +68,17 @@ class DealerController(
     fun searchDealerByNickname(
         @PathVariable nickname: String
     ): List<Dealer> =
-        registry.findByNickname(nickname)
+        service.findByNickname(nickname)
 
     @GetMapping("/text/{text}")
     fun searchDealerByText(
         @PathVariable text: String
     ): List<Dealer> =
-        registry.dealersByTextInNickname(text)
+        service.dealersByTextInNickname(text)
 
     @GetMapping("/loyalty/{loyalty}")
     fun searchDealerByLoyalty(
         @PathVariable loyalty: Loyalty
     ): List<Dealer> =
-        registry.dealersByLoyalty(loyalty)
+        service.dealersByLoyalty(loyalty)
 }
