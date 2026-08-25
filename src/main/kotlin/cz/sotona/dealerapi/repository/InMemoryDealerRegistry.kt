@@ -71,80 +71,60 @@ class InMemoryDealerRegistry : DealerRegistry {
         return true
     }
 
-    override fun removeDealer(id: Int): Boolean {
-        return dealers.removeIf { it.id == id }
-    }
+    override fun removeDealer(id: Int): Boolean =
+        dealers.removeIf { it.id == id }
 
-    override fun dealersCount(): Int {
-        return dealers.size
-    }
+    override fun dealersCount(): Int =
+        dealers.size
 
-    override fun eliteDealersCount(): Int {
-        return eliteDealers().size
-    }
+    override fun eliteDealersCount(): Int =
+        eliteDealers().size
 
-    override fun allDealers(): List<Dealer> {
-        return dealers
-    }
+    override fun allDealers(): List<Dealer> =
+        dealers.toList()
 
-    override fun findByNickname(nickname: String): List<Dealer> {
-        return dealers.filter {
-            it.nickname.equals(nickname, ignoreCase = true)
-        }
-    }
+    override fun findByNickname(nickname: String): List<Dealer> =
+        dealers.filter { it.nickname.equals(nickname, ignoreCase = true) }
 
-    override fun dealersByLoyalty(loyalty: Loyalty): List<Dealer> {
-        return dealers.filter { it.loyalty == loyalty }
-    }
+    override fun dealersByLoyalty(loyalty: Loyalty): List<Dealer> =
+        dealers.filter { it.loyalty == loyalty }
 
-    override fun dealersWithMinIq(minIq: Int): List<Dealer> {
-        return dealers.filter { it.iq >= minIq }
-    }
+    override fun dealersWithMinIq(minIq: Int): List<Dealer> =
+        dealers.filter { it.iq >= minIq }
 
-    override fun dealersWithIqInRange(minIq: Int, maxIq: Int): List<Dealer> {
-        return dealers.filter { it.iq in minIq..maxIq }
-    }
+    override fun dealersWithIqInRange(minIq: Int, maxIq: Int): List<Dealer> =
+        dealers.filter { it.iq in minIq..maxIq }
 
-    override fun dealersWithMinStrength(minStrength: Int): List<Dealer> {
-        return dealers.filter { it.strength >= minStrength }
-    }
+    override fun dealersWithMinStrength(minStrength: Int): List<Dealer> =
+        dealers.filter { it.strength >= minStrength }
 
-    override fun dealersByTextInNickname(text: String): List<Dealer> {
-        return dealers.filter { it.nickname.contains(text, ignoreCase = true) }
-    }
+    override fun dealersByTextInNickname(text: String): List<Dealer> =
+        dealers.filter { it.nickname.contains(text, ignoreCase = true) }
 
-    override fun eliteDealers(): List<Dealer> {
-        return dealers
+    override fun eliteDealers(): List<Dealer> =
+        dealers
             .filter { it.iq >= 110 }
             .filter { it.loyalty == Loyalty.INNER_CIRCLE}
-    }
 
+    override fun strongestDealer(): Dealer? =
+        dealers.maxByOrNull { it.strength }
 
-    override fun strongestDealer(): Dealer? {
-        return dealers.maxByOrNull { it.strength }
-    }
+    override fun smartestDealer(): Dealer? =
+        dealers.maxByOrNull { it.iq }
 
-    override fun smartestDealer(): Dealer? {
-        return dealers.maxByOrNull { it.iq }
-    }
+    override fun dealerWithMostYearsInPrison(): Dealer? =
+        dealers.maxByOrNull { it.yearsInPrison }
 
-    override fun dealerWithMostYearsInPrison(): Dealer? {
-        return dealers.maxByOrNull { it.yearsInPrison }
-    }
-
-    override fun smartestDealerFromLoyalty(loyalty: Loyalty): Dealer? {
-        return dealers
+    override fun smartestDealerFromLoyalty(loyalty: Loyalty): Dealer? =
+        dealers
             .filter { it.loyalty == loyalty }
             .maxByOrNull { it.iq }
-    }
 
-    override fun dealerOfTheYear(): Dealer? {
-        return dealers.maxByOrNull { it.iq + it.strength }
-    }
+    override fun dealerOfTheYear(): Dealer? =
+        dealers.maxByOrNull { it.iq + it.strength }
 
-    override fun findById(id: Int): Dealer? {
-        return dealers.find { it.id == id }
-    }
+    override fun findById(id: Int): Dealer? =
+        dealers.find { it.id == id }
 
     override fun averageIq(): Double? {
         if (dealers.isEmpty()) {
@@ -162,14 +142,14 @@ class InMemoryDealerRegistry : DealerRegistry {
 
     override fun loyaltyStatistics(): Map<Loyalty, LoyaltyStatistics> =
         Loyalty.entries.associateWith { loyalty ->
-            val dealers = dealers.filter { it.loyalty == loyalty }
+            val loyaltyDealers = dealers.filter { it.loyalty == loyalty }
             LoyaltyStatistics(
-                count = dealers.filter { it.loyalty == loyalty }.size,
-                averageIq = dealers.filter { it.loyalty == loyalty }
+                count = loyaltyDealers.size,
+                averageIq = loyaltyDealers
                     .map { it.iq }
                     .average()
                     .let { round(it * 100) / 100 },
-                averageStrength = dealers.filter { it.loyalty == loyalty }
+                averageStrength = loyaltyDealers
                     .map { it.strength }
                     .average()
                     .let { round(it * 100) / 100 },
